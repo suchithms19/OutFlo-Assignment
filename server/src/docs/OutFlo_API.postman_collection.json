@@ -155,6 +155,206 @@
 			]
 		},
 		{
+			"name": "LinkedIn Profile Scraping",
+			"item": [
+				{
+					"name": "Scrape LinkedIn Profiles",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"search_url\": \"https://www.linkedin.com/search/results/people/?geoUrn=%5B%22103644278%22%5D&industry=%5B%221594%22%2C%221862%22%2C%2280%22%5D&keywords=%22lead%20generation%20agency%22&origin=GLOBAL_SEARCH_HEADER&sid=z%40k&titleFreeText=Founder\",\n  \"max_profiles\": 20,\n  \"session_cookie\": \"{{linkedinSessionCookie}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/profiles/scrape",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"profiles",
+								"scrape"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Profiles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/profiles?limit=20&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"profiles"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Profiles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/profiles/search?company=TechCorp&job_title=Engineer&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"profiles",
+								"search"
+							],
+							"query": [
+								{
+									"key": "company",
+									"value": "TechCorp"
+								},
+								{
+									"key": "job_title",
+									"value": "Engineer"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/profiles/{{profileId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"profiles",
+								"{{profileId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/profiles/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"profiles",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Profile",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/profiles/{{profileId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"profiles",
+								"{{profileId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cleanup Browser Resources",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/profiles/cleanup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"profiles",
+								"cleanup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "LinkedIn Message Generation",
 			"item": [
 				{
@@ -250,6 +450,16 @@
 		{
 			"key": "campaignId",
 			"value": "replace_with_actual_campaign_id",
+			"type": "string"
+		},
+		{
+			"key": "profileId",
+			"value": "replace_with_actual_profile_id",
+			"type": "string"
+		},
+		{
+			"key": "linkedinSessionCookie",
+			"value": "your_linkedin_li_at_cookie_value_here",
 			"type": "string"
 		}
 	]
