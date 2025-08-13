@@ -1,13 +1,34 @@
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import Dashboard from './components/Dashboard';
+import CampaignList from './components/CampaignList';
+import CampaignForm from './components/CampaignForm';
+import MessageGenerator from './components/MessageGenerator';
+import ErrorBoundary from './components/ErrorBoundary';
+import './App.css';
 
-function App() {
-
+const App: React.FC = () => {
   return (
-    <>
-        <h1>pong</h1>
-    </>
+    <ErrorBoundary>
+      <Router
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/campaigns" element={<CampaignList />} />
+            <Route path="/campaigns/new" element={<CampaignForm />} />
+            <Route path="/campaigns/:id/edit" element={<CampaignForm />} />
+            <Route path="/message-generator" element={<MessageGenerator />} />
+          </Routes>
+        </Layout>
+      </Router>
+    </ErrorBoundary>
+  );
+};
 
-  )
-}
-
-export default App
+export default App;
