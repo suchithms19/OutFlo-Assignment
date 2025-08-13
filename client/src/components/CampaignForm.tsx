@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { campaignApi } from '../services/api';
 import type { Campaign } from '../types';
 import { Save, X, Plus } from 'lucide-react';
+import { FormFieldSkeleton } from './Skeleton';
 
 const CampaignForm: React.FC = () => {
   const navigate = useNavigate();
@@ -98,8 +99,23 @@ const CampaignForm: React.FC = () => {
 
   if (loading && isEditing) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
+            <div className="animate-pulse bg-gray-200 rounded h-6 w-32"></div>
+          </div>
+
+          <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+            {[...Array(6)].map((_, i) => (
+              <FormFieldSkeleton key={i} />
+            ))}
+            
+            <div className="flex gap-3 pt-4">
+              <div className="animate-pulse bg-gray-200 rounded h-10 w-32"></div>
+              <div className="animate-pulse bg-gray-200 rounded h-10 w-20"></div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

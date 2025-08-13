@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { campaignApi } from '../services/api';
 import type { Campaign } from '../types';
 import { ArrowLeft, Edit, Trash2, Users, Link as LinkIcon } from 'lucide-react';
+import { DetailPageSkeleton } from './Skeleton';
 
 const CampaignDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -43,11 +44,7 @@ const CampaignDetail: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <DetailPageSkeleton />;
   }
 
   if (!campaign) {

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { campaignApi } from '../services/api';
 import type { Campaign } from '../types';
 import { Plus, Edit, Trash2, Eye } from 'lucide-react';
+import { TableRowSkeleton } from './Skeleton';
 
 const CampaignList: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -53,8 +54,47 @@ const CampaignList: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="space-y-4 sm:space-y-6">
+        {/* Header skeleton */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div>
+            <div className="animate-pulse bg-gray-200 rounded h-8 w-32 mb-2"></div>
+            <div className="animate-pulse bg-gray-200 rounded h-5 w-64"></div>
+          </div>
+          <div className="animate-pulse bg-gray-200 rounded h-10 w-32"></div>
+        </div>
+
+        {/* Table skeleton */}
+        <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-3 sm:px-6 py-3 text-left">
+                    <div className="animate-pulse bg-gray-200 rounded h-4 w-20"></div>
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-left">
+                    <div className="animate-pulse bg-gray-200 rounded h-4 w-16"></div>
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-left hidden sm:table-cell">
+                    <div className="animate-pulse bg-gray-200 rounded h-4 w-12"></div>
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-left hidden md:table-cell">
+                    <div className="animate-pulse bg-gray-200 rounded h-4 w-16"></div>
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-right">
+                    <div className="animate-pulse bg-gray-200 rounded h-4 w-16 ml-auto"></div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {[...Array(5)].map((_, i) => (
+                  <TableRowSkeleton key={i} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     );
   }

@@ -10,22 +10,21 @@ const generatePersonalizedMessage = async (
 	try {
 		const model = getGeminiModel();
 
-		const prompt = `Generate a personalized LinkedIn outreach message for the following person:
-    
+		const prompt = `Write a concise (<300 characters) LinkedIn connection request for the person below:
+
 Name: ${profileData.name}
 Job Title: ${profileData.job_title}
 Company: ${profileData.company}
 Location: ${profileData.location}
 Summary: ${profileData.summary}
 
-Create a professional, engaging outreach message for Outflo (a campaign management and outreach automation platform). The message should:
-1. Be personalized based on their role and company
-2. Mention how Outflo can help with their outreach and sales process
-3. Be concise (under 300 characters for LinkedIn)
-4. Sound natural and not overly salesy
-5. Include a call to connect or learn more
+The message should:
+1. Feel personal and relevant to their role/company
+2. Highlight briefly how Outflo (campaign management + outreach automation) can help improve outreach/sales
+3. Be friendly, natural, and non-salesy
+4. End with a light call to connect or learn more
 
-Return only the message text without any additional formatting or quotes.`;
+Return ONLY the message text, no quotes, no extra formatting.`;
 
 		const result = await model.generateContent(prompt);
 		const response = await result.response;

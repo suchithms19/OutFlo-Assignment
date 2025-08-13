@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { messageApi } from '../services/api';
 import type { LinkedInProfile, GeneratedMessage } from '../types';
 import { MessageSquare, Sparkles, Copy, RefreshCw } from 'lucide-react';
+import { Skeleton } from './Skeleton';
 
 const MessageGenerator: React.FC = () => {
   const [profile, setProfile] = useState<LinkedInProfile>({
@@ -150,7 +151,22 @@ const MessageGenerator: React.FC = () => {
           </div>
           
           <div className="p-4 sm:p-6">
-            {!generatedMessage ? (
+            {loading ? (
+              <div className="space-y-4">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="space-y-2">
+                    <Skeleton height="h-4" width="w-full" />
+                    <Skeleton height="h-4" width="w-full" />
+                    <Skeleton height="h-4" width="w-3/4" />
+                  </div>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Skeleton height="h-10" width="w-24" className="rounded-md" />
+                  <Skeleton height="h-10" width="w-20" className="rounded-md" />
+                </div>
+              </div>
+            ) : !generatedMessage ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <MessageSquare className="w-8 h-8 text-gray-400" />
