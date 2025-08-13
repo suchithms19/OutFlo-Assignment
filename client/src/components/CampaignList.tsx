@@ -2,27 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { campaignApi } from '../services/api';
 import type { Campaign } from '../types';
-import { Plus, Edit, Trash2, Eye, MoreVertical } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye } from 'lucide-react';
 
 const CampaignList: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCampaigns();
   }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (): void => {
-      setActiveDropdown(null);
-    };
-
-    if (activeDropdown) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
-  }, [activeDropdown]);
 
   const fetchCampaigns = async (): Promise<void> => {
     try {
@@ -148,7 +136,7 @@ const CampaignList: React.FC = () => {
                             : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                         }`}
                       >
-                        {campaign.status}
+                                                 {campaign.status.charAt(0).toUpperCase() + campaign.status.slice(1)}
                       </button>
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 hidden sm:table-cell">
@@ -158,45 +146,28 @@ const CampaignList: React.FC = () => {
                       {campaign.accountIDs?.length || 0}
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="relative">
-                        <button
-                          onClick={() => setActiveDropdown(activeDropdown === campaign._id ? null : campaign._id!)}
-                          className="text-gray-400 hover:text-gray-600 p-1 rounded"
+                      <div className="flex items-center gap-2 justify-end">
+                        <Link
+                          to={`/campaigns/${campaign._id}`}
+                          className="text-blue-600 hover:text-blue-800 p-1 rounded"
+                          title="View Campaign"
                         >
-                          <MoreVertical className="w-4 h-4" />
+                          <Eye className="w-4 h-4" />
+                        </Link>
+                        <Link
+                          to={`/campaigns/${campaign._id}/edit`}
+                          className="text-gray-600 hover:text-gray-800 p-1 rounded"
+                          title="Edit Campaign"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(campaign._id!)}
+                          className="text-red-600 hover:text-red-800 p-1 rounded"
+                          title="Delete Campaign"
+                        >
+                          <Trash2 className="w-4 h-4" />
                         </button>
-                        {activeDropdown === campaign._id && (
-                          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
-                            <div className="py-1">
-                              <Link
-                                to={`/campaigns/${campaign._id}`}
-                                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                onClick={() => setActiveDropdown(null)}
-                              >
-                                <Eye className="w-4 h-4" />
-                                View
-                              </Link>
-                              <Link
-                                to={`/campaigns/${campaign._id}/edit`}
-                                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                onClick={() => setActiveDropdown(null)}
-                              >
-                                <Edit className="w-4 h-4" />
-                                Edit
-                              </Link>
-                              <button
-                                onClick={() => {
-                                  handleDelete(campaign._id!);
-                                  setActiveDropdown(null);
-                                }}
-                                className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        )}
                       </div>
                     </td>
                   </tr>

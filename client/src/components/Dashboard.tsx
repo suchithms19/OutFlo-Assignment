@@ -133,7 +133,7 @@ const Dashboard: React.FC = () => {
                         ? 'bg-green-100 text-green-800'
                         : 'bg-gray-100 text-gray-800'
                     }`}>
-                      {campaign.status}
+                      {campaign.status.charAt(0).toUpperCase() + campaign.status.slice(1)}
                     </span>
                   </div>
                 ))}
