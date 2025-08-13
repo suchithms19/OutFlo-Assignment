@@ -1,0 +1,256 @@
+{
+	"info": {
+		"_postman_id": "outflo-campaign-api",
+		"name": "OutFlo Campaign Management API",
+		"description": "API collection for OutFlo campaign management system with LinkedIn message generation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/ping",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"ping"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Campaign Management",
+			"item": [
+				{
+					"name": "Get All Campaigns",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/campaigns",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"campaigns"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Campaign by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/campaigns/{{campaignId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaignId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Campaign",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Campaign 1\",\n  \"description\": \"This is a campaign to find leads\",\n  \"leads\": [\n    \"https://linkedin.com/in/profile-1\",\n    \"https://linkedin.com/in/profile-2\",\n    \"https://linkedin.com/in/profile-3\"\n  ],\n  \"account_ids\": [\"123\", \"456\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/campaigns",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"campaigns"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Campaign",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Campaign Name\",\n  \"description\": \"Updated campaign description\",\n  \"status\": \"inactive\",\n  \"leads\": [\n    \"https://linkedin.com/in/new-profile-1\",\n    \"https://linkedin.com/in/new-profile-2\"\n  ],\n  \"account_ids\": [\"789\", \"101112\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/campaigns/{{campaignId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaignId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Campaign (Soft Delete)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/campaigns/{{campaignId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{campaignId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LinkedIn Message Generation",
+			"item": [
+				{
+					"name": "Generate Personalized Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"job_title\": \"Software Engineer\",\n  \"company\": \"TechCorp\",\n  \"location\": \"San Francisco, CA\",\n  \"summary\": \"Experienced software engineer with 5+ years in AI & ML development. Passionate about building scalable systems and leading technical teams.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/personalized-message",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"personalized-message"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Message - Sales Manager",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Sarah Johnson\",\n  \"job_title\": \"Sales Manager\",\n  \"company\": \"SalesForce Inc\",\n  \"location\": \"New York, NY\",\n  \"summary\": \"Results-driven sales manager with 8+ years of experience in B2B sales. Expert in CRM optimization and team leadership. Consistently exceeds quarterly targets.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/personalized-message",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"personalized-message"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Message - Marketing Director",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Mike Chen\",\n  \"job_title\": \"Marketing Director\",\n  \"company\": \"Digital Growth Agency\",\n  \"location\": \"Austin, TX\",\n  \"summary\": \"Creative marketing director specializing in digital campaigns and growth hacking. Led successful campaigns for 50+ clients with average 300% ROI increase.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/personalized-message",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"personalized-message"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "campaignId",
+			"value": "replace_with_actual_campaign_id",
+			"type": "string"
+		}
+	]
+}
