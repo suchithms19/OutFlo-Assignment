@@ -285,10 +285,10 @@ class LinkedInScrapingService {
 		}
 	}
 
-	// Extract profile URLs from search results
+	// Extract profile URLs from search results with better deduplication
 	private async extractProfileUrls(page: Page): Promise<string[]> {
 		return await page.evaluate(() => {
-			const profileLinks: string[] = [];
+			const profileLinks = new Set<string>(); // Use Set for automatic deduplication
 			
 			// Multiple selectors for profile links
 			const selectors = [
@@ -302,19 +302,28 @@ class LinkedInScrapingService {
 				const links = document.querySelectorAll(selector as any) as any;
 				links.forEach((link: any) => {
 					const href = (link as any).getAttribute?.("href") as string | null || ((link as any).href as string | undefined);
-					if (typeof href === 'string' && href.includes('/in/') && !profileLinks.includes(href)) {
-						// Clean the URL (remove query parameters)
-						const cleanUrl = href.split('?')[0];
-						if (cleanUrl) profileLinks.push(cleanUrl);
+					if (typeof href === 'string' && href.includes('/in/')) {
+					// Clean the URL (remove query parameters and fragments)
+					const hrefStr = typeof href === 'string' ? href : '';
+					if (!hrefStr) return;
+					let cleanUrl = hrefStr.split('?')[0]?.split('#')[0] ?? '';
+					// Ensure it's a full URL
+					if (cleanUrl.startsWith('/')) {
+						cleanUrl = `https://www.linkedin.com${cleanUrl}`;
+					}
+					// Only add valid profile URLs (not company pages, etc.)
+					if (cleanUrl && cleanUrl.includes('/in/') && !cleanUrl.includes('/company/')) {
+						profileLinks.add(cleanUrl);
+					}
 					}
 				});
 			}
 
-			return profileLinks;
+			return Array.from(profileLinks);
 		});
 	}
 
-	// Main scraping function
+	// Main scraping function with improved logic
 	async scrapeLinkedInProfiles(
 		searchUrl: string,
 		maxProfiles = 20,
@@ -340,11 +349,9 @@ class LinkedInScrapingService {
 			page = await browser.newPage();
 			await this.setupPage(page);
 
-
 			// Check authentication; if failed, try interactive login
 			let isAuthenticated = await this.checkAuthentication(page);
 			if (!isAuthenticated) {
-				// if session cookie was provided but invalid, clear and try manual login
 				await this.clear_linkedin_cookies(page);
 				const logged_in = await this.promptLogin(page);
 				if (!logged_in) {
@@ -368,17 +375,18 @@ class LinkedInScrapingService {
 			});
 			await this.randomDelay(3000, 5000);
 
-			const allProfileUrls: string[] = [];
+			const allProfileUrls = new Set<string>(); // Use Set for better deduplication
+			const scrapedProfiles: LinkedInProfileData[] = [];
 			let currentPage = 1;
 			const maxPages = Math.ceil(maxProfiles / 10);
 
-			// Extract profile URLs from search results
-			while (allProfileUrls.length < maxProfiles && currentPage <= maxPages) {
-				console.log(`Extracting URLs from page ${currentPage}...`);
+			// FIXED: Process profiles page by page instead of collecting all URLs first
+			while (scrapedProfiles.length < maxProfiles && currentPage <= maxPages) {
+				console.log(`Processing page ${currentPage}...`);
 
 				try {
-					// Wait for search results
-					await page.waitForSelector('[data-chameleon-result-urn]', { timeout: 15000 });
+					// Wait for search results to load
+					await page.waitForSelector('[data-chameleon-result-urn], .reusable-search__result-container', { timeout: 15000 });
 				} catch (error) {
 					console.log("No search results found on this page");
 					break;
@@ -386,22 +394,50 @@ class LinkedInScrapingService {
 
 				// Extract profile URLs from current page
 				const pageUrls = await this.extractProfileUrls(page);
-				allProfileUrls.push(...pageUrls);
-
 				console.log(`Found ${pageUrls.length} profile URLs on page ${currentPage}`);
 
-				// Try to go to next page
-				if (allProfileUrls.length < maxProfiles && currentPage < maxPages) {
+				// Filter out URLs we've already processed
+				const newUrls = pageUrls.filter(url => !allProfileUrls.has(url));
+				console.log(`${newUrls.length} new URLs to process`);
+
+				// Add new URLs to our tracking set
+				newUrls.forEach(url => allProfileUrls.add(url));
+
+				// FIXED: Scrape profiles from current page immediately
+				for (let i = 0; i < newUrls.length && scrapedProfiles.length < maxProfiles; i++) {
+					const profileUrl = newUrls[i]!;
+					console.log(`Scraping profile ${scrapedProfiles.length + 1}/${maxProfiles}: ${profileUrl}`);
+
+					const profileData = await this.scrapeProfileData(page, profileUrl);
+					if (profileData) {
+						scrapedProfiles.push(profileData);
+						console.log(`Successfully scraped: ${profileData.full_name}`);
+					} else {
+						console.log(`Failed to scrape profile: ${profileUrl}`);
+					}
+
+					// Add delay between profiles to avoid rate limiting
+					if (i < newUrls.length - 1 && scrapedProfiles.length < maxProfiles) {
+						await this.randomDelay(3000, 6000);
+					}
+				}
+
+				// Check if we have enough profiles
+				if (scrapedProfiles.length >= maxProfiles) {
+					console.log(`Reached target of ${maxProfiles} profiles`);
+					break;
+				}
+
+				// Navigate to next page if we need more profiles
+				if (currentPage < maxPages) {
 					try {
-						const nextButton = await page.$('button[aria-label="Next"]:not([disabled])');
-						if (nextButton) {
-							await nextButton.click();
-							await this.randomDelay(4000, 7000);
-							currentPage++;
-						} else {
-							console.log("No more pages available");
-							break;
-						}
+						// Go back to search results page first
+						await page.goto(searchUrl.replace(/&page=\d+/, '') + `&page=${currentPage + 1}`, {
+							waitUntil: "networkidle2",
+							timeout: 30000,
+						});
+						await this.randomDelay(4000, 7000);
+						currentPage++;
 					} catch (error) {
 						console.log("Error navigating to next page:", error);
 						break;
@@ -411,26 +447,7 @@ class LinkedInScrapingService {
 				}
 			}
 
-			// Limit URLs to requested number
-			const limitedUrls = allProfileUrls.slice(0, maxProfiles);
-			console.log(`Total profile URLs found: ${limitedUrls.length}`);
-
-			// Scrape individual profiles
-			const scrapedProfiles: LinkedInProfileData[] = [];
-			for (let i = 0; i < limitedUrls.length; i++) {
-				const profileUrl = limitedUrls[i]!;
-				console.log(`Scraping profile ${i + 1}/${limitedUrls.length}: ${profileUrl}`);
-
-				const profileData = await this.scrapeProfileData(page, profileUrl);
-				if (profileData) {
-					scrapedProfiles.push(profileData);
-				}
-
-				// Add delay between profiles
-				if (i < limitedUrls.length - 1) {
-					await this.randomDelay(5000, 10000);
-				}
-			}
+			console.log(`Total profiles scraped: ${scrapedProfiles.length}`);
 
 			// Save to database
 			const savedProfiles = await this.saveProfilesToDatabase(scrapedProfiles);
