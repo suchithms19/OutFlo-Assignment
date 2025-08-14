@@ -119,7 +119,7 @@ const ProfileScraper: React.FC = () => {
       {/* Scraping Form */}
       <div className="bg-white rounded-xl shadow-sm">
         <div className="p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">LinkedIn Profile Scraper</h2>
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">LinkedIn Profile Scraper (Not deployed to production)</h2>
           <p className="text-sm text-gray-600 mt-1">Scrape LinkedIn profiles from search results</p>
         </div>
         
