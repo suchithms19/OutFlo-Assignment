@@ -6,7 +6,7 @@ A modern full-stack application for managing marketing campaigns and automating 
 
 - **Campaign Management**: Create, edit, and track marketing campaigns
 - **AI-Powered Messaging**: Generate personalized LinkedIn messages using Google Gemini AI
-- **LinkedIn Profile Scraping**: Automated profile data extraction (Bonus Feature)
+- **LinkedIn Profile Scraping**: Automated profile data extraction 
 - **Real-time Dashboard**: Monitor campaign performance and analytics
 - **Responsive Design**: Modern UI built with React and Tailwind CSS
 
@@ -61,7 +61,7 @@ cp env.example .env
 
 Edit `.env` with your configuration:
 ```env
-VITE_API_BASE_URL=your-api
+API_BASE_URL=your-api
 ```
 
 ## 🚀 Running the Application
@@ -77,22 +77,4 @@ bun run dev
 cd client
 npm run dev
 ```
-
-The application will be available at:
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:3000
-
-## 📚 API Documentation
-
-API endpoints are documented in the Postman collection located at:
-`server/src/docs/OutFlo_API.postman_collection.json`
-
-### Core Endpoints
-
-- `GET /api/campaigns` - List all campaigns
-- `POST /api/campaigns` - Create new campaign
-- `PUT /api/campaigns/:id` - Update campaign
-- `DELETE /api/campaigns/:id` - Delete campaign
-- `POST /api/personalized-message` - Generate AI message
-- `POST /api/scraping/scrape` - Scrape LinkedIn profiles (Bonus)
 

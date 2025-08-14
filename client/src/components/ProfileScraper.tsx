@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { scrapingApi } from '../services/api';
 import type { ScrapedLinkedInProfile, ScrapingRequest } from '../types';
-import { Search, Download, Trash2, RefreshCw, ExternalLink, User, Building, MapPin, Calendar } from 'lucide-react';
+import { Search, Download, Trash2, RefreshCw, ExternalLink, Building, MapPin, Calendar } from 'lucide-react';
 
 const ProfileScraper: React.FC = () => {
   const [scrapingData, setScrapingData] = useState<ScrapingRequest>({
@@ -229,62 +229,150 @@ const ProfileScraper: React.FC = () => {
               <p className="mt-1 text-sm text-gray-500">Start scraping to see LinkedIn profiles here</p>
             </div>
           ) : (
-            <div className="space-y-4">
-              {profiles.map((profile) => (
-                <div key={profile._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-gray-400" />
-                        <h4 className="font-medium text-gray-900">{profile.name}</h4>
+            <div className="overflow-hidden">
+              {/* Mobile Card View */}
+              <div className="block sm:hidden space-y-4">
+                {profiles.map((profile) => (
+                  <div key={profile._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-gray-900">{profile.name}</h3>
+                          <p className="text-sm text-gray-600">{profile.jobTitle}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <a
+                            href={profile.profileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            View
+                          </a>
+                          <button
+                            onClick={() => handleDeleteProfile(profile._id!)}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-red-600 bg-red-50 rounded hover:bg-red-100 transition-colors"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                            Delete
+                          </button>
+                        </div>
                       </div>
                       
-                      <div className="text-sm text-gray-600">{profile.jobTitle}</div>
-                      
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+                      <div className="space-y-1 text-sm text-gray-600">
                         <div className="flex items-center gap-1">
-                          <Building className="w-3 h-3" />
-                          {profile.company}
+                          <Building className="w-4 h-4" />
+                          <span>{profile.company}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          {profile.location}
+                          <MapPin className="w-4 h-4" />
+                          <span>{profile.location}</span>
                         </div>
                         {profile.scrapedAt && (
                           <div className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            {new Date(profile.scrapedAt).toLocaleDateString()}
+                            <Calendar className="w-4 h-4" />
+                            <span>{new Date(profile.scrapedAt).toLocaleDateString()}</span>
                           </div>
                         )}
                       </div>
 
                       {profile.summary && (
-                        <p className="text-sm text-gray-600 mt-2 line-clamp-2">{profile.summary}</p>
+                        <p className="text-sm text-gray-700 line-clamp-2">{profile.summary}</p>
                       )}
                     </div>
-
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <a
-                        href={profile.profileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-1 px-3 py-1 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        View Profile
-                      </a>
-                      
-                      <button
-                        onClick={() => handleDeleteProfile(profile._id!)}
-                        className="flex items-center justify-center gap-1 px-3 py-1 text-xs bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        Delete
-                      </button>
-                    </div>
                   </div>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden sm:block">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Profile
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Company
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Location
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Scraped Date
+                        </th>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {profiles.map((profile) => (
+                        <tr key={profile._id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4">
+                            <div className="flex flex-col">
+                              <div className="text-sm font-medium text-gray-900">{profile.name}</div>
+                              <div className="text-sm text-gray-500">{profile.jobTitle}</div>
+                              {profile.summary && (
+                                <div className="text-xs text-gray-400 mt-1 line-clamp-1 max-w-xs">
+                                  {profile.summary}
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <Building className="w-4 h-4 text-gray-400 mr-2" />
+                              <span className="text-sm text-gray-900">{profile.company}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <MapPin className="w-4 h-4 text-gray-400 mr-2" />
+                              <span className="text-sm text-gray-900">{profile.location}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <Calendar className="w-4 h-4 text-gray-400 mr-2" />
+                              <span className="text-sm text-gray-900">
+                                {profile.scrapedAt 
+                                  ? new Date(profile.scrapedAt).toLocaleDateString()
+                                  : 'N/A'
+                                }
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-center">
+                            <div className="flex items-center justify-center space-x-2">
+                              <a
+                                href={profile.profileUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-full hover:bg-blue-100 transition-colors"
+                                title="View LinkedIn Profile"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                                View
+                              </a>
+                              <button
+                                onClick={() => handleDeleteProfile(profile._id!)}
+                                className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-red-600 bg-red-50 rounded-full hover:bg-red-100 transition-colors"
+                                title="Delete Profile"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-              ))}
+              </div>
             </div>
           )}
 
