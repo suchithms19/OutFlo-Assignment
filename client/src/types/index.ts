@@ -4,7 +4,7 @@ export interface Campaign {
   description: string;
   status: 'active' | 'inactive' | 'deleted';
   leads?: string[];
-  accountIDs?: string[];
+  account_ids?: string[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -15,6 +15,39 @@ export interface LinkedInProfile {
   company: string;
   location: string;
   summary: string;
+}
+
+// Scraped LinkedIn Profile interface for the bonus feature
+export interface ScrapedLinkedInProfile {
+  _id?: string;
+  name: string;
+  jobTitle: string;
+  company: string;
+  location: string;
+  profileUrl: string;
+  summary?: string;
+  scrapedAt?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ScrapingRequest {
+  searchUrl: string;
+  numProfiles: number;
+}
+
+export interface ScrapingResponse {
+  message: string;
+  profilesScraped: number;
+  profiles: ScrapedLinkedInProfile[];
+}
+
+export interface GetProfilesResponse {
+  profiles: ScrapedLinkedInProfile[];
+  total: number;
+  page: number;
+  pages: number;
+  limit: number;
 }
 
 export interface GeneratedMessage {

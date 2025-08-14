@@ -1,5 +1,13 @@
 import axios from 'axios';
-import type { Campaign, LinkedInProfile, GeneratedMessage } from '../types';
+import type { 
+  Campaign, 
+  LinkedInProfile, 
+  GeneratedMessage, 
+  ScrapedLinkedInProfile,
+  ScrapingRequest,
+  ScrapingResponse,
+  GetProfilesResponse
+} from '../types';
 
 const API_BASE_URL = 'http://localhost:3000/api';
 
@@ -39,6 +47,42 @@ export const campaignApi = {
 export const messageApi = {
   generatePersonalized: async (profile: LinkedInProfile): Promise<GeneratedMessage> => {
     const response = await api.post('/personalized-message', profile);
+    return response.data;
+  },
+};
+
+export const scrapingApi = {
+  scrapeProfiles: async (request: ScrapingRequest): Promise<ScrapingResponse> => {
+    const response = await api.post('/scraping/scrape', request);
+    return response.data;
+  },
+
+  getAllProfiles: async (params?: {
+    page?: number;
+    limit?: number;
+    company?: string;
+    location?: string;
+  }): Promise<GetProfilesResponse> => {
+    const response = await api.get('/scraping/profiles', { params });
+    return response.data;
+  },
+
+  getProfileById: async (id: string): Promise<ScrapedLinkedInProfile> => {
+    const response = await api.get(`/scraping/profiles/${id}`);
+    return response.data;
+  },
+
+  deleteProfile: async (id: string): Promise<void> => {
+    await api.delete(`/scraping/profiles/${id}`);
+  },
+
+  deleteAllProfiles: async (): Promise<{ message: string; deletedCount: number }> => {
+    const response = await api.delete('/scraping/profiles');
+    return response.data;
+  },
+
+  cleanupInvalidProfiles: async (): Promise<{ message: string; deletedCount: number }> => {
+    const response = await api.post('/scraping/cleanup');
     return response.data;
   },
 };

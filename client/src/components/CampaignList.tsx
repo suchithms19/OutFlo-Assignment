@@ -19,7 +19,7 @@ const CampaignList: React.FC = () => {
       const campaigns = Array.isArray(data) ? data.map(campaign => ({
         ...campaign,
         leads: campaign.leads || [],
-        accountIDs: campaign.accountIDs || []
+        account_ids: campaign.account_ids || []
       })) : [];
       setCampaigns(campaigns);
     } catch (error) {
@@ -123,7 +123,7 @@ const CampaignList: React.FC = () => {
                         <h4 className="font-medium text-gray-900 truncate">{campaign.name}</h4>
                         <p className="text-sm text-gray-500 truncate mt-1">{campaign.description}</p>
                         <p className="text-xs text-gray-500 mt-1">
-                          {campaign.leads?.length || 0} leads • {campaign.accountIDs?.length || 0} accounts
+                          {campaign.leads?.length || 0} leads • {campaign.account_ids?.length || 0} accounts
                         </p>
                       </div>
                       <button
@@ -195,7 +195,7 @@ const CampaignList: React.FC = () => {
                       </button>
                     </div>
                     <div className="text-gray-600">{campaign.leads?.length || 0}</div>
-                    <div className="text-gray-600">{campaign.accountIDs?.length || 0}</div>
+                    <div className="text-gray-600">{campaign.account_ids?.length || 0}</div>
                     <div className="flex items-center gap-2 justify-end">
                       <Link
                         to={`/campaigns/${campaign._id}`}

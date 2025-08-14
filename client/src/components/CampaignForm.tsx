@@ -14,7 +14,7 @@ const CampaignForm: React.FC = () => {
     description: '',
     status: 'active',
     leads: [],
-    accountIDs: [],
+    account_ids: [],
   });
   const [loading, setLoading] = useState(false);
   const [newLead, setNewLead] = useState('');
@@ -35,7 +35,7 @@ const CampaignForm: React.FC = () => {
         description: campaign.description,
         status: campaign.status,
         leads: campaign.leads,
-        accountIDs: campaign.accountIDs,
+        account_ids: campaign.account_ids,
       });
     } catch (error) {
       console.error('Failed to fetch campaign:', error);
@@ -80,10 +80,10 @@ const CampaignForm: React.FC = () => {
   };
 
   const addAccountId = (): void => {
-    if (newAccountId.trim() && !(formData.accountIDs || []).includes(newAccountId.trim())) {
+    if (newAccountId.trim() && !(formData.account_ids || []).includes(newAccountId.trim())) {
       setFormData(prev => ({
         ...prev,
-        accountIDs: [...(prev.accountIDs || []), newAccountId.trim()]
+        account_ids: [...(prev.account_ids || []), newAccountId.trim()]
       }));
       setNewAccountId('');
     }
@@ -92,7 +92,7 @@ const CampaignForm: React.FC = () => {
   const removeAccountId = (accountIdToRemove: string): void => {
     setFormData(prev => ({
       ...prev,
-      accountIDs: (prev.accountIDs || []).filter(id => id !== accountIdToRemove)
+      account_ids: (prev.account_ids || []).filter(id => id !== accountIdToRemove)
     }));
   };
 
@@ -237,7 +237,7 @@ const CampaignForm: React.FC = () => {
                 </button>
               </div>
               <div className="space-y-2 max-h-32 overflow-y-auto">
-                {(formData.accountIDs || []).map((accountId, index) => (
+                {(formData.account_ids || []).map((accountId, index) => (
                   <div key={index} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg">
                     <span className="text-sm text-gray-700">{accountId}</span>
                     <button

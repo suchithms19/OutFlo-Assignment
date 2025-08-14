@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { campaignApi } from '../services/api';
 import type { Campaign } from '../types';
-import { Users, MessageSquare, Activity } from 'lucide-react';
+import { Users, MessageSquare, Activity, Search } from 'lucide-react';
+import ProfileScraper from './ProfileScraper';
 
 const Dashboard: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'scraper'>('dashboard');
 
   useEffect(() => {
     const fetchCampaigns = async (): Promise<void> => {
@@ -16,7 +18,7 @@ const Dashboard: React.FC = () => {
         const campaigns = Array.isArray(data) ? data.map(campaign => ({
           ...campaign,
           leads: campaign.leads || [],
-          accountIDs: campaign.accountIDs || []
+          account_ids: campaign.account_ids || []
         })) : [];
         setCampaigns(campaigns);
       } catch (error) {
@@ -107,6 +109,39 @@ const Dashboard: React.FC = () => {
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Hello Campaign Manager 👋</h1>
           <p className="text-gray-600 mt-1 text-sm sm:text-base">Here's what's happening with your campaigns today.</p>
         </div>
+
+        {/* Tabs Navigation */}
+        <div className="border-b border-gray-200 bg-white rounded-lg">
+          <nav className="flex space-x-8 px-6" aria-label="Tabs">
+            <button
+              onClick={() => setActiveTab('dashboard')}
+              className={`${
+                activeTab === 'dashboard'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } flex items-center gap-2 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            >
+              <Activity className="w-4 h-4" />
+              Campaign Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('scraper')}
+              className={`${
+                activeTab === 'scraper'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } flex items-center gap-2 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            >
+              <Search className="w-4 h-4" />
+              LinkedIn Scraper
+            </button>
+          </nav>
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'dashboard' ? (
+          <>
+            {/* Dashboard Content */}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -214,6 +249,10 @@ const Dashboard: React.FC = () => {
             </div>
           )}
         </div>
+          </>
+        ) : (
+          <ProfileScraper />
+        )}
       </div>
     </div>
   );

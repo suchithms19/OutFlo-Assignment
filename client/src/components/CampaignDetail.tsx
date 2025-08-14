@@ -22,7 +22,7 @@ const CampaignDetail: React.FC = () => {
       setCampaign({
         ...data,
         leads: data.leads || [],
-        accountIDs: data.accountIDs || []
+        account_ids: data.account_ids || []
       });
     } catch (error) {
       console.error('Failed to fetch campaign:', error);
@@ -172,7 +172,7 @@ const CampaignDetail: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="space-y-1 sm:space-y-2">
                 <p className="text-xs sm:text-sm font-medium text-gray-600">Account IDs</p>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900">{campaign.accountIDs?.length || 0}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900">{campaign.account_ids?.length || 0}</p>
               </div>
               <div className="bg-purple-500 p-2 sm:p-3 rounded-full">
                 <Users className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
@@ -206,14 +206,14 @@ const CampaignDetail: React.FC = () => {
           </div>
         )}
 
-        {campaign.accountIDs && campaign.accountIDs.length > 0 && (
+        {campaign.account_ids && campaign.account_ids.length > 0 && (
           <div className="bg-white rounded-xl shadow-sm">
             <div className="p-4 sm:p-6 border-b border-gray-100">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900">Account IDs</h3>
             </div>
             <div className="p-4 sm:p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {campaign.accountIDs.map((accountId, index) => (
+                {campaign.account_ids.map((accountId, index) => (
                   <div key={index} className="p-3 bg-gray-50 rounded-lg text-center">
                     <span className="text-sm font-mono text-gray-700">{accountId}</span>
                   </div>
