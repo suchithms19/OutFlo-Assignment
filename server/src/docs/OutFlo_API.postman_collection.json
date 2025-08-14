@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "outflo-campaign-api",
 		"name": "OutFlo Campaign Management API",
-		"description": "API collection for OutFlo campaign management system with LinkedIn message generation",
+		"description": "API collection for OutFlo campaign management system with LinkedIn message generation and profile scraping",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -239,6 +239,223 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "LinkedIn Profile Scraping",
+			"item": [
+				{
+					"name": "Start LinkedIn Scraping",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"searchUrl\": \"https://www.linkedin.com/search/results/people/?geoUrn=%5B%22103644278%22%5D&industry=%5B%221594%22%2C%221862%22%2C%2280%22%5D&keywords=%22lead%20generation%20agency%22&origin=GLOBAL_SEARCH_HEADER&sid=z%40k&titleFreeText=Founder\",\n  \"numProfiles\": 10\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/scraping/scrape",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"scraping",
+								"scrape"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Scraped Profiles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/scraping/profiles?page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"scraping",
+								"profiles"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profiles with Company Filter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/scraping/profiles?page=1&limit=10&company=TechCorp",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"scraping",
+								"profiles"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "company",
+									"value": "TechCorp"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profiles with Location Filter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/scraping/profiles?page=1&limit=10&location=San Francisco",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"scraping",
+								"profiles"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "location",
+									"value": "San Francisco"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/scraping/profiles/{{profileId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"scraping",
+								"profiles",
+								"{{profileId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Profile by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/scraping/profiles/{{profileId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"scraping",
+								"profiles",
+								"{{profileId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete All Profiles",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/scraping/profiles",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"scraping",
+								"profiles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [
@@ -250,6 +467,11 @@
 		{
 			"key": "campaignId",
 			"value": "replace_with_actual_campaign_id",
+			"type": "string"
+		},
+		{
+			"key": "profileId",
+			"value": "replace_with_actual_profile_id",
 			"type": "string"
 		}
 	]
