@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { campaignApi } from '../services/api';
 import type { Campaign } from '../types';
 import { Users, MessageSquare, Activity } from 'lucide-react';
-import { StatCardSkeleton, CampaignCardSkeleton } from './Skeleton';
 
 const Dashboard: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -32,53 +31,68 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const activeCampaigns = campaigns.filter(c => c.status === 'active').length;
+  const totalLeads = campaigns.reduce((sum, campaign) => sum + (campaign.leads?.length || 0), 0);
 
   const stats = [
     {
       title: 'Total Campaigns',
-      value: campaigns.length,
+      value: campaigns.length.toLocaleString(),
       icon: Users,
-      color: 'bg-blue-500',
+      bgColor: 'bg-emerald-50',
+      iconColor: 'bg-emerald-500',
     },
     {
       title: 'Active Campaigns',
-      value: activeCampaigns,
+      value: activeCampaigns.toLocaleString(),
       icon: Activity,
-      color: 'bg-green-500',
+      bgColor: 'bg-blue-50',
+      iconColor: 'bg-blue-500',
     },
     {
-      title: 'Messages Generated',
-      value: '0',
+      title: 'Total Leads',
+      value: totalLeads.toLocaleString(),
       icon: MessageSquare,
-      color: 'bg-orange-500',
+      bgColor: 'bg-purple-50',
+      iconColor: 'bg-purple-500',
     },
   ];
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        {/* Header skeleton */}
-        <div>
-          <div className="animate-pulse bg-gray-200 rounded h-8 w-48 mb-2"></div>
-          <div className="animate-pulse bg-gray-200 rounded h-5 w-96"></div>
-        </div>
-
-        {/* Stats cards skeleton */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {[...Array(3)].map((_, i) => (
-            <StatCardSkeleton key={i} />
-          ))}
-        </div>
-
-        {/* Recent campaigns skeleton */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-4 sm:p-6 border-b border-gray-200">
-            <div className="animate-pulse bg-gray-200 rounded h-6 w-32"></div>
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-7xl mx-auto space-y-8">
+          {/* Header skeleton */}
+          <div className="space-y-2">
+            <div className="animate-pulse bg-gray-200 rounded h-8 w-64"></div>
+            <div className="animate-pulse bg-gray-200 rounded h-5 w-96"></div>
           </div>
-          <div className="p-4 sm:p-6 space-y-4">
+
+          {/* Stats cards skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(3)].map((_, i) => (
-              <CampaignCardSkeleton key={i} />
+              <div key={i} className="bg-white rounded-xl p-6 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <div className="animate-pulse bg-gray-200 rounded h-4 w-24"></div>
+                    <div className="animate-pulse bg-gray-200 rounded h-8 w-16"></div>
+                    <div className="animate-pulse bg-gray-200 rounded h-3 w-20"></div>
+                  </div>
+                  <div className="animate-pulse bg-gray-200 rounded-full h-12 w-12"></div>
+                </div>
+              </div>
             ))}
+          </div>
+
+          {/* Recent campaigns skeleton */}
+          <div className="bg-white rounded-xl shadow-sm">
+            <div className="p-6 border-b border-gray-100">
+              <div className="animate-pulse bg-gray-200 rounded h-6 w-40"></div>
+            </div>
+            <div className="p-6 space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="animate-pulse bg-gray-200 rounded h-12 w-full"></div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -86,64 +100,117 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto p-3 sm:p-6 space-y-6 sm:space-y-8">
+        {/* Header */}
+        <div className="text-center sm:text-left">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Hello Campaign Manager 👋</h1>
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">Here's what's happening with your campaigns today.</p>
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <div key={stat.title} className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs sm:text-sm font-medium text-gray-600">{stat.title}</p>
-                  <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
-                </div>
-                <div className={`${stat.color} p-2 sm:p-3 rounded-full`}>
-                  <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {stats.map((stat) => {
+            const Icon = stat.icon;
+            return (
+              <div
+                key={stat.title}
+                className={`${stat.bgColor} rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1 sm:space-y-2">
+                    <p className="text-xs sm:text-sm font-medium text-gray-600">{stat.title}</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stat.value}</p>
+                  </div>
+                  <div className={`${stat.iconColor} p-2 sm:p-3 rounded-full`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="p-4 sm:p-6 border-b border-gray-200">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900">Recent Campaigns</h3>
+            );
+          })}
         </div>
-        <div className="p-4 sm:p-6">
+
+        {/* All Campaigns */}
+        <div className="bg-white rounded-xl shadow-sm">
+          <div className="p-4 sm:p-6 border-b border-gray-100">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Recent Campaigns</h3>
+          </div>
+          
           {campaigns.length === 0 ? (
-            <div className="text-center py-8">
-              <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">No campaigns yet</p>
+            <div className="text-center py-8 sm:py-12">
+              <Users className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-500 mb-2 text-sm sm:text-base">No campaigns yet</p>
               <Link
                 to="/campaigns"
-                className="text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block"
+                className="text-blue-600 hover:text-blue-700 font-medium text-sm sm:text-base"
               >
-                Go to Campaigns
+                Create your first campaign
               </Link>
             </div>
           ) : (
-            <div className="space-y-4">
-              {campaigns.slice(0, 5).map((campaign) => (
-                <Link
-                  key={campaign._id}
-                  to={`/campaigns/${campaign._id}`}
-                  className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors"
-                >
-                  <div>
-                    <h4 className="font-medium text-gray-900">{campaign.name}</h4>
-                    <p className="text-sm text-gray-600">{campaign.leads?.length || 0} leads</p>
-                  </div>
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                    campaign.status === 'active' 
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {campaign.status.charAt(0).toUpperCase() + campaign.status.slice(1)}
-                  </span>
-                </Link>
-              ))}
+            <div className="divide-y divide-gray-100">
+              {/* Mobile-friendly campaign cards */}
+              <div className="block sm:hidden">
+                {campaigns.map((campaign) => (
+                  <Link
+                    key={campaign._id}
+                    to={`/campaigns/${campaign._id}`}
+                    className="block p-4 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-gray-900 truncate">{campaign.name}</h4>
+                        <p className="text-sm text-gray-600 mt-1">{campaign.leads?.length || 0} leads</p>
+                      </div>
+                      <div className="ml-4 flex-shrink-0">
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                            campaign.status === 'active' 
+                              ? 'bg-emerald-100 text-emerald-700' 
+                              : 'bg-red-100 text-red-700'
+                          }`}
+                        >
+                          {campaign.status === 'active' ? 'Active' : 'Inactive'}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Desktop table view */}
+              <div className="hidden sm:block">
+                {/* Table Header */}
+                <div className="grid grid-cols-3 gap-4 p-4 sm:p-6 text-sm font-medium text-gray-500 bg-gray-50">
+                  <div>Campaign Name</div>
+                  <div>Leads</div>
+                  <div>Status</div>
+                </div>
+
+                {/* Table Rows */}
+                {campaigns.map((campaign) => (
+                  <Link
+                    key={campaign._id}
+                    to={`/campaigns/${campaign._id}`}
+                    className="grid grid-cols-3 gap-4 p-4 sm:p-6 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="font-medium text-gray-900 truncate">{campaign.name}</div>
+                    <div className="text-gray-600">{campaign.leads?.length || 0} leads</div>
+                    <div>
+                      <span
+                        className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${
+                          campaign.status === 'active' 
+                            ? 'bg-emerald-100 text-emerald-700' 
+                            : 'bg-red-100 text-red-700'
+                        }`}
+                      >
+                        {campaign.status === 'active' ? 'Active' : 'Inactive'}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
           )}
         </div>
